@@ -1,0 +1,5 @@
+digraph ROBDD {
+  {rank=same; "A" "B" "C"}
+  0 [label="0", shape=box];
+  1 [label="1", shape=box];
+}

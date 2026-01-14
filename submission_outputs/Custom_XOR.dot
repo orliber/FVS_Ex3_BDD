@@ -1,0 +1,14 @@
+digraph ROBDD {
+  {rank=same; "A" "B"}
+  0 [label="0", shape=box];
+  1 [label="1", shape=box];
+  10 [label="A"];
+  10 -> 3 [label="0", style=dotted];
+  10 -> 5 [label="1", style=solid];
+  3 [label="B"];
+  3 -> 0 [label="0", style=dotted];
+  3 -> 1 [label="1", style=solid];
+  5 [label="B"];
+  5 -> 1 [label="0", style=dotted];
+  5 -> 0 [label="1", style=solid];
+}

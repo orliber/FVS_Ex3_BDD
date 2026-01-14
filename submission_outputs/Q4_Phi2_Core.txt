@@ -1,0 +1,11 @@
+ROBDD for variables: ['p', 'q']
+Root: 7
+Nodes:
+0: Terminal(False)
+1: Terminal(True)
+2: if p then 1 else 0
+3: if q then 1 else 0
+4: if p then 0 else 1
+5: if q then 0 else 1
+6: if p then 0 else 5
+7: if p then 1 else 3
