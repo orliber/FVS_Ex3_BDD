@@ -3,13 +3,13 @@ digraph ROBDD {
   node [shape=circle];
   0 [label="0", shape=box, style=filled, fillcolor=lightcoral];
   1 [label="1", shape=box, style=filled, fillcolor=lightgreen];
-  10 [label="A"];
-  10 -> 3 [label="0", style=dashed, color=red];
-  10 -> 5 [label="1", style=solid, color=blue];
+  11 [label="A"];
+  11 -> 3 [label="0", style=dashed, color=red];
+  11 -> 4 [label="1", style=solid, color=blue];
   3 [label="B"];
   3 -> 0 [label="0", style=dashed, color=red];
   3 -> 1 [label="1", style=solid, color=blue];
-  5 [label="B"];
-  5 -> 1 [label="0", style=dashed, color=red];
-  5 -> 0 [label="1", style=solid, color=blue];
+  4 [label="B"];
+  4 -> 1 [label="0", style=dashed, color=red];
+  4 -> 0 [label="1", style=solid, color=blue];
 }

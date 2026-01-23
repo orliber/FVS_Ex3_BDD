@@ -1,0 +1,27 @@
+digraph ROBDD {
+  rankdir=TB;
+  node [shape=circle];
+  0 [label="0", shape=box, style=filled, fillcolor=lightcoral];
+  1 [label="1", shape=box, style=filled, fillcolor=lightgreen];
+  24 [label="a"];
+  24 -> 15 [label="0", style=dashed, color=red];
+  24 -> 23 [label="1", style=solid, color=blue];
+  15 [label="b"];
+  15 -> 7 [label="0", style=dashed, color=red];
+  15 -> 8 [label="1", style=solid, color=blue];
+  7 [label="d"];
+  7 -> 0 [label="0", style=dashed, color=red];
+  7 -> 1 [label="1", style=solid, color=blue];
+  8 [label="d"];
+  8 -> 1 [label="0", style=dashed, color=red];
+  8 -> 0 [label="1", style=solid, color=blue];
+  23 [label="b"];
+  23 -> 21 [label="0", style=dashed, color=red];
+  23 -> 22 [label="1", style=solid, color=blue];
+  21 [label="c"];
+  21 -> 1 [label="0", style=dashed, color=red];
+  21 -> 7 [label="1", style=solid, color=blue];
+  22 [label="c"];
+  22 -> 1 [label="0", style=dashed, color=red];
+  22 -> 8 [label="1", style=solid, color=blue];
+}

@@ -1,0 +1,77 @@
+ROBDD for variables: ['y1', 'x1', 'y2', 'x2', 'y3', 'x3']
+Root: 71
+Total nodes: 72
+
+Node Table:
+  0: Terminal(False)
+  1: Terminal(True)
+  2: if x1 then 1 else 0
+  3: if y1 then 1 else 0
+  4: if y1 then 0 else 1
+  5: if y1 then 0 else 2
+  6: if x1 then 0 else 1
+  7: if y1 then 6 else 0
+  8: if y1 then 1 else 6
+  9: if y1 then 2 else 1
+  10: if y1 then 2 else 6
+  11: if y1 then 6 else 2
+  12: if x2 then 1 else 0
+  13: if x1 then 0 else 12
+  14: if x1 then 12 else 0
+  15: if y1 then 14 else 13
+  16: if y2 then 1 else 0
+  17: if y2 then 0 else 1
+  18: if y2 then 0 else 12
+  19: if x1 then 0 else 18
+  20: if x1 then 18 else 0
+  21: if y1 then 20 else 19
+  22: if x2 then 0 else 1
+  23: if y2 then 1 else 22
+  24: if x1 then 1 else 23
+  25: if x1 then 23 else 1
+  26: if y1 then 25 else 24
+  27: if x1 then 0 else 23
+  28: if y1 then 25 else 27
+  29: if x1 then 1 else 18
+  30: if y1 then 20 else 29
+  31: if y2 then 22 else 0
+  32: if y2 then 12 else 1
+  33: if y2 then 12 else 22
+  34: if y2 then 22 else 12
+  35: if x1 then 0 else 33
+  36: if x1 then 33 else 0
+  37: if y1 then 36 else 35
+  38: if x3 then 1 else 0
+  39: if x2 then 0 else 38
+  40: if x2 then 38 else 0
+  41: if y2 then 40 else 39
+  42: if x1 then 0 else 41
+  43: if x1 then 41 else 0
+  44: if y1 then 43 else 42
+  45: if y3 then 1 else 0
+  46: if y3 then 0 else 1
+  47: if y3 then 0 else 38
+  48: if x2 then 0 else 47
+  49: if x2 then 47 else 0
+  50: if y2 then 49 else 48
+  51: if x1 then 0 else 50
+  52: if x1 then 50 else 0
+  53: if y1 then 52 else 51
+  54: if x3 then 0 else 1
+  55: if y3 then 1 else 54
+  56: if x2 then 1 else 55
+  57: if x2 then 55 else 1
+  58: if y2 then 57 else 56
+  59: if x1 then 1 else 58
+  60: if x1 then 58 else 1
+  61: if y1 then 60 else 59
+  62: if x2 then 0 else 55
+  63: if y2 then 57 else 62
+  64: if x1 then 0 else 63
+  65: if x1 then 63 else 1
+  66: if y1 then 65 else 64
+  67: if x2 then 1 else 47
+  68: if y2 then 49 else 67
+  69: if x1 then 1 else 68
+  70: if x1 then 68 else 0
+  71: if y1 then 70 else 69

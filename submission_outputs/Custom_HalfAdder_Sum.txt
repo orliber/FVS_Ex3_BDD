@@ -1,0 +1,17 @@
+ROBDD for variables: ['A', 'B']
+Root: 11
+Total nodes: 12
+
+Node Table:
+  0: Terminal(False)
+  1: Terminal(True)
+  2: if A then 1 else 0
+  3: if B then 1 else 0
+  4: if B then 0 else 1
+  5: if A then 4 else 0
+  6: if A then 0 else 1
+  7: if A then 0 else 3
+  8: if A then 3 else 1
+  9: if A then 1 else 4
+  10: if A then 3 else 4
+  11: if A then 4 else 3

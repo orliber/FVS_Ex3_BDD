@@ -1,8 +1,9 @@
 """
 Assignment Submission Script
-Includes inputs for Questions 1, 3, and 4.
+Includes inputs for Questions 1a, 1b, and 1c.
 """
 import os
+import shutil
 from robdd import build_robdd
 
 def run_test(name, formula, var_order):
@@ -18,82 +19,163 @@ def run_test(name, formula, var_order):
     robdd, root = build_robdd(formula, var_order, path)
     print(f"Nodes created: {len(robdd.nodes)}")
     print(f"Output saved to {path}.txt/dot/png")
+    
+    # Display if result is tautology or contradiction
+    if root == robdd.terminal_true:
+        print("Result: TAUTOLOGY (always True)")
+    elif root == robdd.terminal_false:
+        print("Result: CONTRADICTION (always False)")
 
 def main():
     # ==========================================
-    # Part (b): Formulas from Assignment 3
+    # Clean output directory at start
     # ==========================================
+    output_dir = "submission_outputs"
     
-    # --- Question 3a ---
-    # Original: F(q & H~p) | G(p -> XFr)
-    # Abstraction: We treat complex temporal terms as atomic variables
-    # Let A = "F(q & H~p)"
-    # Let B = "G(p -> XFr)"
-    # This might be too abstract. Let's try slightly deeper:
-    # Var 1: F_q_and_H_not_p
-    # Var 2: G_p_implies_XFr
-    run_test(
-        "Q3a_Abstract", 
-        "A | B", 
-        ["A", "B"]
-    )
-
-    # --- Question 3b ---
-    # Original: G(p -> (q U (r & Fs)))
-    # Since this is a massive temporal formula, the Boolean BDD 
-    # of the outer structure is just a single variable if we don't break it down.
-    # However, let's assume we want to visualize the inner logic:
-    # p -> (q U (r & F_s))
-    # We map: U_expr = q U (r & Fs)
-    run_test(
-        "Q3b_InnerLogic",
-        "p -> U_expr",
-        ["p", "U_expr"]
-    )
-
-    # --- Question 4 (The Game) ---
-    # Phi = Phi1 -> ~Phi2
-    # Phi1 = G(p -> Xq)
-    # Phi2 = G(p | q)
+    # Remove the directory and all its contents if it exists
+    if os.path.exists(output_dir):
+        shutil.rmtree(output_dir)
+        print(f"Cleared previous outputs from {output_dir}/")
     
-    # 1. High level abstraction (Phi1 -> ~Phi2)
+    # Create fresh output directory
+    os.makedirs(output_dir, exist_ok=True)
+    print(f"Created fresh output directory: {output_dir}/\n")
+    print("=" * 60)
+    
+    # ==========================================
+    # Question 1a: (a & ~c) | (b ⊕ d)
+    # ==========================================
+    # XOR (⊕) is implemented as: b ⊕ d = (b | d) & ~(b & d)
+    # Or equivalently: (b & ~d) | (~b & d)
+    
     run_test(
-        "Q4_HighLevel",
-        "Phi1 -> ~Phi2",
-        ["Phi1", "Phi2"]
+        "Q1a_Formula",
+        "(a & ~c) | (b ^ d)",
+        ["a", "b", "c", "d"]
     )
     
-    # 2. Trying to capture the boolean structure inside the temporal operators
-    # Let's verify the boolean core of Phi1: p -> Xq
-    # Variables: p, X_q (Next q)
+    # Test with different variable orderings to show impact
     run_test(
-        "Q4_Phi1_Core",
-        "p -> X_q",
-        ["p", "X_q"]
+        "Q1a_Alt_Order1",
+        "(a & ~c) | (b ^ d)",
+        ["a", "c", "b", "d"]
     )
     
-    # Let's verify the boolean core of Phi2: p | q
     run_test(
-        "Q4_Phi2_Core",
-        "p | q",
-        ["p", "q"]
+        "Q1a_Alt_Order2",
+        "(a & ~c) | (b ^ d)",
+        ["b", "d", "a", "c"]
     )
 
     # ==========================================
-    # Part (c): Custom Formula
+    # Question 1b: At least 3 of x1,x2,x3,x4,x5 are true
     # ==========================================
-    # A complex boolean formula: (A -> B) & (B -> C) -> (A -> C)
-    # This is Transitivity, should be a Tautology (Resulting BDD should be just True terminal)
+    # This is a majority function (threshold-3 out of 5)
+    # We need to enumerate all combinations where >= 3 variables are true
+    
+    # Method 1: Explicit enumeration (clearer but verbose)
+    # All combinations of exactly 3, 4, or 5 variables being true
+    formula_1b_explicit = (
+        # Exactly 3 true
+        "(x1 & x2 & x3 & ~x4 & ~x5) | "
+        "(x1 & x2 & ~x3 & x4 & ~x5) | "
+        "(x1 & x2 & ~x3 & ~x4 & x5) | "
+        "(x1 & ~x2 & x3 & x4 & ~x5) | "
+        "(x1 & ~x2 & x3 & ~x4 & x5) | "
+        "(x1 & ~x2 & ~x3 & x4 & x5) | "
+        "(~x1 & x2 & x3 & x4 & ~x5) | "
+        "(~x1 & x2 & x3 & ~x4 & x5) | "
+        "(~x1 & x2 & ~x3 & x4 & x5) | "
+        "(~x1 & ~x2 & x3 & x4 & x5) | "
+        # Exactly 4 true
+        "(x1 & x2 & x3 & x4 & ~x5) | "
+        "(x1 & x2 & x3 & ~x4 & x5) | "
+        "(x1 & x2 & ~x3 & x4 & x5) | "
+        "(x1 & ~x2 & x3 & x4 & x5) | "
+        "(~x1 & x2 & x3 & x4 & x5) | "
+        # All 5 true
+        "(x1 & x2 & x3 & x4 & x5)"
+    )
+    
+    run_test(
+        "Q1b_AtLeast3of5",
+        formula_1b_explicit,
+        ["x1", "x2", "x3", "x4", "x5"]
+    )
+    
+    # Test with different variable ordering
+    run_test(
+        "Q1b_Alt_Order",
+        formula_1b_explicit,
+        ["x5", "x4", "x3", "x2", "x1"]
+    )
+
+    # ==========================================
+    # Question 1c: x > y where x and y are 3-bit numbers
+    # ==========================================
+    # x = x1*4 + x2*2 + x3*1 (x1 is MSB, x3 is LSB)
+    # y = y1*4 + y2*2 + y3*1 (y1 is MSB, y3 is LSB)
+    
+    # x > y can be built hierarchically:
+    # x > y iff:
+    #   x1 > y1, OR
+    #   x1 = y1 AND x2 > y2, OR
+    #   x1 = y1 AND x2 = y2 AND x3 > y3
+    
+    # Simplified:
+    # (x1 & ~y1) | 
+    # (~(x1 ^ y1) & x2 & ~y2) |
+    # (~(x1 ^ y1) & ~(x2 ^ y2) & x3 & ~y3)
+    
+    formula_1c = (
+        "(x1 & ~y1) | "
+        "((~(x1 ^ y1)) & x2 & ~y2) | "
+        "((~(x1 ^ y1)) & (~(x2 ^ y2)) & x3 & ~y3)"
+    )
+    
+    run_test(
+        "Q1c_Comparison",
+        formula_1c,
+        ["x1", "y1", "x2", "y2", "x3", "y3"]
+    )
+    
+    # Test with different variable ordering (interleaved)
+    run_test(
+        "Q1c_Alt_Order1",
+        formula_1c,
+        ["x1", "x2", "x3", "y1", "y2", "y3"]
+    )
+    
+    # Test with another ordering
+    run_test(
+        "Q1c_Alt_Order2",
+        formula_1c,
+        ["y1", "x1", "y2", "x2", "y3", "x3"]
+    )
+
+    # ==========================================
+    # Additional custom formulas
+    # ==========================================
+    
+    # Example 1: Transitivity (Tautology)
     run_test(
         "Custom_Transitivity",
         "(A -> B) & (B -> C) -> (A -> C)",
         ["A", "B", "C"]
     )
     
-    # Another example: XOR implemented as (A | B) & ~(A & B)
+    # Example 2: XOR formula
     run_test(
         "Custom_XOR",
         "(A | B) & ~(A & B)",
+        ["A", "B"]
+    )
+    
+    # Example 3: Half Adder (sum and carry)
+    # Sum = A XOR B, Carry = A AND B
+    run_test(
+        "Custom_HalfAdder_Sum",
+        "A ^ B",
         ["A", "B"]
     )
 

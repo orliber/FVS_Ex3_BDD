@@ -69,7 +69,7 @@ class ROBDD:
         i = 0
         while i < len(formula):
             char = formula[i]
-            if char in "()&|~":
+            if char in "()&|~^":  # Added ^ for XOR
                 tokens.append(char)
                 i += 1
             elif formula[i: i + 2] == "->":
@@ -103,11 +103,20 @@ class ROBDD:
         return left
 
     def _parse_implies(self) -> int:
-        left = self._parse_or()
+        left = self._parse_xor()
         while self.pos < len(self.tokens) and self.tokens[self.pos] == "->":
             self.pos += 1
-            right = self._parse_or()
+            right = self._parse_xor()
             left = self._build_implies(left, right)
+        return left
+
+    def _parse_xor(self) -> int:
+        """Parse XOR operations (^)"""
+        left = self._parse_or()
+        while self.pos < len(self.tokens) and self.tokens[self.pos] == "^":
+            self.pos += 1
+            right = self._parse_or()
+            left = self._build_xor(left, right)
         return left
 
     def _parse_or(self) -> int:
@@ -200,6 +209,14 @@ class ROBDD:
         # A -> B = ~A | B
         return self._build_or(self._build_not(idx1), idx2)
 
+    def _build_xor(self, idx1: int, idx2: int) -> int:
+        """Build XOR operation: A XOR B = (A | B) & ~(A & B)
+        Equivalently: (A & ~B) | (~A & B)"""
+        # Using: A XOR B = (A & ~B) | (~A & B)
+        left_part = self._build_and(idx1, self._build_not(idx2))
+        right_part = self._build_and(self._build_not(idx1), idx2)
+        return self._build_or(left_part, right_part)
+
     # ============================
     # Export
     # ============================
@@ -207,20 +224,25 @@ class ROBDD:
         # 1. Text Export
         with open(f"{filename_base}.txt", "w") as f:
             f.write(f"ROBDD for variables: {self.variable_order}\n")
-            f.write(f"Root: {root}\nNodes:\n")
+            f.write(f"Root: {root}\n")
+            f.write(f"Total nodes: {len(self.nodes)}\n\n")
+            f.write("Node Table:\n")
             for i, node in enumerate(self.nodes):
                 if node.is_terminal:
-                    f.write(f"{i}: Terminal({node.value})\n")
+                    f.write(f"  {i}: Terminal({node.value})\n")
                 else:
-                    f.write(f"{i}: if {node.var} then {node.high} else {node.low}\n")
+                    f.write(f"  {i}: if {node.var} then {node.high} else {node.low}\n")
         
         # 2. DOT Export
         dot_path = f"{filename_base}.dot"
         with open(dot_path, "w") as f:
             f.write("digraph ROBDD {\n")
-            f.write('  {rank=same; "' + '" "'.join(self.variable_order) + '"}\n')
-            f.write('  0 [label="0", shape=box];\n')
-            f.write('  1 [label="1", shape=box];\n')
+            f.write("  rankdir=TB;\n")
+            f.write("  node [shape=circle];\n")
+            
+            # Terminal nodes
+            f.write('  0 [label="0", shape=box, style=filled, fillcolor=lightcoral];\n')
+            f.write('  1 [label="1", shape=box, style=filled, fillcolor=lightgreen];\n')
             
             visited = set()
             def visit(n_idx):
@@ -229,8 +251,8 @@ class ROBDD:
                 node = self.nodes[n_idx]
                 if not node.is_terminal:
                     f.write(f'  {n_idx} [label="{node.var}"];\n')
-                    f.write(f'  {n_idx} -> {node.low} [label="0", style=dotted];\n')
-                    f.write(f'  {n_idx} -> {node.high} [label="1", style=solid];\n')
+                    f.write(f'  {n_idx} -> {node.low} [label="0", style=dashed, color=red];\n')
+                    f.write(f'  {n_idx} -> {node.high} [label="1", style=solid, color=blue];\n')
                     visit(node.low)
                     visit(node.high)
             
@@ -249,6 +271,7 @@ class ROBDD:
             print(f"Graphviz not installed. Run manually: dot -Tpng {dot_path} -o {filename_base}.png")
 
 def build_robdd(formula: str, var_order: List[str], output_prefix: str):
+    """Main entry point to build and export an ROBDD"""
     robdd = ROBDD(var_order)
     root = robdd.parse_formula(formula)
     robdd.export(root, output_prefix)
